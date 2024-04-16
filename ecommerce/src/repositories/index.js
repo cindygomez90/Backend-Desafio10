@@ -8,6 +8,7 @@ const { UserDao, ProductDao, CartDao, TicketDao } = require("../daos/factory")
 
 
 const userService = new UserRepository(new UserDao())
+//console.log('UserService initialized successfully:', userService)   //borrar
 const productService = new ProductRepository(new ProductDao())
 const cartService = new CartRepository(new CartDao())
 const ticketService = new TicketRepository(new TicketDao())

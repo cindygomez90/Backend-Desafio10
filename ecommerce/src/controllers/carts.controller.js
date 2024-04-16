@@ -70,6 +70,19 @@
                     
                 }
         
+                // Verificar si el usuario es premium
+                if (req.user && req.user.role === 'USER_PREMIUM') {
+                // Verificar si el producto pertenece al usuario
+                if (product.owner === req.user.email) {
+                // Si el producto pertenece al usuario premium, devolver un mensaje de error
+                    return res.status(403).json({
+                    status: 'error',
+                    message: 'No puedes agregar a tu carrito un producto que te pertenece.'
+                    })
+                }
+            }
+
+
                 if (cart && cart.products && cart.products.length > 0) {
                     const productIndex = cart.products.findIndex(p => p.product.equals(pid))
                     
@@ -236,7 +249,7 @@
                         amount: totalAmount,
                         purchaser: userCart, 
                         purchasedProducts,
-                    };
+                    }
 
                     const createdTicket = await this.ticketService.createTicket(ticketData)
 

@@ -11,7 +11,6 @@ const pruebasRouter = require("./pruebas.router.js")
 const router = Router()
 
 //importación de las rutas
-router.use('/', viewsRouter)
 router.use('/api/products', productsRouter)
 router.use('/api/carts', cartsRouter)
 router.use('/api/messages', messagesRouter)
@@ -19,6 +18,7 @@ router.use('/api/sessions', sessionsRouter)
 router.use('/api/users', usersRouter)
 router.use('/api/mensajeria', mensajeriaRouter)
 router.use('/api/pruebas', pruebasRouter)
+router.use('/', viewsRouter)
 
 router.get('*', (req, res)=>{
     res.render ('errorpagina')   

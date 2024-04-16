@@ -82,6 +82,14 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
             try {                               
                 const productNew  = request.body
 
+                let owner = 'ADMIN'
+
+                if (request.user && request.user.role === 'USER_PREMIUM') {
+                    owner = request.user.email
+                }
+
+                productNew.owner = owner
+
                 //si alguno de los campos no viene se va a instanciar el error
                 if (!productNew.title || !productNew.price || !productNew.stock) {
                     CustomError.createError({
@@ -103,7 +111,7 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
             }
         }
         
-        updateProduct = async (req, res)=>{
+        /*updateProduct = async (req, res)=>{
             try {
             const { pid } = req.params
             const productToUpdate = req.body
@@ -131,7 +139,85 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
                 console.log(error);
                 responses.status(500).json({ success: false, message: 'Error al eliminar el producto.' })
             }
+        }*/
+
+
+        updateProduct = async (req, res) => {
+            try {
+                const { pid } = req.params
+                const productToUpdate = req.body
+        
+                // Verificar si el usuario es administrador
+                if (req.user && req.user.role === 'ADMIN') {
+                    const product = await this.productService.updateProduct(pid, productToUpdate);
+                    return res.status(200).json({
+                        status: 'success',
+                        message: product
+                    });
+                }
+        
+                // Verificar si el producto pertenece al usuario premium
+                const product = await this.productService.getProduct(pid);
+                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {
+                    await this.productService.updateProduct(pid, productToUpdate);
+                    return res.status(200).json({
+                        status: 'success',
+                        message: product
+                    })
+                }
+        
+                return res.status(403).json({
+                    status: 'error',
+                    message: 'No tienes permisos para modificar este producto.'
+                })
+
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({
+                    status: 'error',
+                    message: 'Error al actualizar el producto.'
+                })
+            }
         }
+
+
+        deleteProduct = async (req, res) => {
+            try {
+                const { pid } = req.params
+        
+                // Verificar si el usuario es administrador
+                if (req.user && req.user.role === 'ADMIN') {
+                    const result = await this.productService.deleteProduct(pid)
+                    if (!result) {
+                        return res.status(404).json({ success: false, message: 'Producto no encontrado.' })
+                    }
+                    return res.json({ success: true, message: 'Producto eliminado correctamente.' })
+                }
+        
+                // Verificar si el producto pertenece al usuario premium
+                const product = await this.productService.getProduct(pid)
+                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {
+                    const result = await this.productService.deleteProduct(pid)
+                    if (!result) {
+                        return res.status(404).json({ success: false, message: 'Producto no encontrado.' })
+                    }
+                    return res.json({ success: true, message: 'Producto eliminado correctamente.' })
+                }
+        
+                return res.status(403).json({
+                    success: false,
+                    message: 'No tienes permisos para eliminar este producto.'
+                })
+
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({ 
+                    success: false, 
+                    message: 'Error al eliminar el producto.' 
+                })
+            }
+        }
+        
     }
 
 

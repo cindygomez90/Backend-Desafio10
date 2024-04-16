@@ -127,4 +127,16 @@ viewsRouter.get ('/register', (req, res) => {
     res.render ('register')
 })
 
+//vista para formuario de recuperación de contraseña
+viewsRouter.get('/forgot-password', (req, res) => {
+    res.render('forgotPassword')
+})
+
+
+
+viewsRouter.get('/resetPassword', (req, res) => {
+    res.render('resetPassword')
+})
+
+
 module.exports = viewsRouter

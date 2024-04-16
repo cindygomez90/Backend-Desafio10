@@ -86,7 +86,7 @@ class UserController {
     
     deleteUser = async (request, responses)=>{
         try {
-            const {uid} = request.params
+            const { uid}  = request.params
             const result = await this.userService.deleteUser (uid)
             responses.status(200).send({
                 status: 'succes',
@@ -94,6 +94,25 @@ class UserController {
             })
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    changeUserRole = async (req, res) => {
+        try {
+            const { uid } = req.params
+            const { role } = req.body
+
+            res.json({
+                status: 'success',
+                message: 'Rol de usuario actualizado correctamente',
+            })
+
+        } catch (error) {
+            console.error(error)
+            res.status(500).json({
+                status: 'error',
+                message: 'Error al cambiar el rol del usuario',
+            })
         }
     }
 }

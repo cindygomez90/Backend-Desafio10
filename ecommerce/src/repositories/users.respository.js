@@ -1,4 +1,4 @@
-const { UserDto } = require('../dto/userDto')
+const { UserDto } = require('../dto/userDto.js')
 
 class UserRepository {
     constructor (userDao) {

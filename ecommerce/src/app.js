@@ -43,7 +43,7 @@ app.use(handleErrors)
 
 //configuración socket del lado del server
 const httpServer = app.listen(PORT, () => {
-    console.log('Desafío: Implementación de logger')
+    console.log('Entrega: Segunda práctica de integración')
 } )
 
 const io = new Server (httpServer)
