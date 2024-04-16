@@ -3,12 +3,10 @@ const { Router } = require ("express")
 const { passportCall}  = require ('../middleware/pasportCall.js')
 const { authorization } = require ('../middleware/authentication.js')
 const SessionController = require('../controllers/sessions.controller.js')
-const ResetPasswordController = require('../controllers/resetPassword.controller.js')
-
 
 const sessionsRouter = Router ()
-const { register, failregister, login, faillogin, current, logout, GitHub } = new SessionController ()
-const { requestPasswordReset, resetPassword } = new ResetPasswordController()
+const { register, failregister, login, faillogin, current, logout, GitHub, requestPasswordReset, resetPassword } = new SessionController ()
+
 
 //Endpoint para el registro del usuario
 sessionsRouter.post ('/register', register)
@@ -29,7 +27,7 @@ sessionsRouter.post('/logout', logout)
 sessionsRouter.post('/forgot-password', requestPasswordReset)
 
 //Endpoint para restablecer contraseña 
-sessionsRouter.post('/reset-password/:token', resetPassword)
+sessionsRouter.get('/reset-password', resetPassword)
 
 //Endpoint para github
 sessionsRouter.get('/github', passport.authenticate('github', { scope: ['user:email'] }))

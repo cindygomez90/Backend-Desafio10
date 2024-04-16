@@ -127,15 +127,15 @@ viewsRouter.get ('/register', (req, res) => {
     res.render ('register')
 })
 
-//vista para formuario de recuperación de contraseña
+//vista para formulario de recuperación de contraseña
 viewsRouter.get('/forgot-password', (req, res) => {
     res.render('forgotPassword')
 })
 
-
-
-viewsRouter.get('/resetPassword', (req, res) => {
-    res.render('resetPassword')
+//vista para formulario para crear una nueva contraseña
+viewsRouter.get('/reset-password', (req, res) => {
+    const token = req.query.token
+    res.render('resetPassword', { token })
 })
 
 
