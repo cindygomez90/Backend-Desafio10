@@ -155,13 +155,12 @@ class SessionController {
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
             const resetLink = `${process.env.BASE_URL}/api/sessions/reset-password?token=${token}`
 
-            /*await sendMail(
+            await sendMail(
                 user.email, 
                 'Restablecer contraseña', 
-                `<p>Haga clic en el siguiente enlace para restablecer su contraseña:</p><a href="${resetLink}">${resetLink}</a>`)*/
+                `<p>Haga clic en el siguiente enlace para restablecer su contraseña:</p><a href="${resetLink}">${resetLink}</a>`)   //VERIFICAR EL LINK
 
-            // Imprimir el enlace en la consola en lugar de enviarlo por correo electrónico
-            console.log("Enlace para restablecer contraseña:", resetLink)
+            //console.log("Enlace para restablecer contraseña:", resetLink)
             
             return res.status(200).json({ message: 'Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.' })
 
@@ -174,35 +173,50 @@ class SessionController {
     resetPassword = async (req, res) => {
         try {
             const { token } = req.query
+            return res.render('resetPassword', { token })
+    
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Ocurrió un error al cargar la vista de restablecimiento de contraseña.' })
+        }
+    }
+    
+    processResetPassword = async (req, res) => {
+        try {
+            const { token } = req.query
             const { newPassword, repeatPassword } = req.body
-
+    
             if (newPassword !== repeatPassword) {
-            return res.status(400).json({ message: 'Las contraseñas no coinciden.' })
+                return res.status(400).json({ message: 'Las contraseñas no coinciden.' })
             }
-
+    
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY)
             const user = await this.userService.getUser({ _id: decodedToken.userId })
-
+    
             if (!user) {
-            return res.status(404).json({ message: 'No se encontró un usuario asociado a este token.' })
+                return res.status(404).json({ message: 'No se encontró un usuario asociado a este token.' })
             }
 
             if (isValidPassword(newPassword, user.password)) {
-            return res.status(400).json({ message: 'La nueva contraseña no puede ser igual a la anterior.' })
+                return res.status(400).json({ message: 'La nueva contraseña no puede ser igual a la anterior.' })
             }
-
-            user.password = newPassword
-            await this.userService.updateUser(decodedToken.userId, { password: newPassword })
-            return res.status(200).json({ message: 'Contraseña restablecida exitosamente.' })
-
+    
+            const hashedPassword = await bcrypt.hash(newPassword, 10)
+            await this.userService.updateUser(decodedToken.userId, { password: hashedPassword })
+    
+            return res.status(200).json({ 
+                message: 'Contraseña restablecida exitosamente.' 
+                })
+    
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-            return res.status(400).json({ message: 'El enlace para restablecer la contraseña ha expirado. Por favor, solicite uno nuevo.' })
+                return res.status(400).json({ message: 'El enlace para restablecer la contraseña ha expirado. Por favor, solicite uno nuevo.' })
             }
             console.error(error);
             return res.status(500).json({ message: 'Ocurrió un error al restablecer la contraseña.' })
         }
     }
+    
 
 }
 
