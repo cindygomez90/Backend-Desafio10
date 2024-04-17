@@ -23,7 +23,7 @@ class UserController {
     getUser =  async (request, responses)=>{
         try {
             const { uid } = request.params
-            const user = await this.userService.getUser ( {_id: uid} )
+            const user = await this.userService.getUser ({_id: uid})
             responses.json({
                 status: 'success',
                 result: user
@@ -102,9 +102,20 @@ class UserController {
             const { uid } = req.params
             const { role } = req.body
 
+            const user = await this.userService.getUser ({_id: uid})
+            if (!user) {
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'Usuario no encontrado',
+                })
+            }
+
+            user.role = role
+            await user.save()
+
             res.json({
                 status: 'success',
-                message: 'Rol de usuario actualizado correctamente',
+                message: 'Rol de usuario actualizado',
             })
 
         } catch (error) {

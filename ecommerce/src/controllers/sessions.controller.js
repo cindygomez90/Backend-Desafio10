@@ -158,7 +158,7 @@ class SessionController {
             await sendMail(
                 user.email, 
                 'Restablecer contraseña', 
-                `<p>Haga clic en el siguiente enlace para restablecer su contraseña:</p><a href="${resetLink}">${resetLink}</a>`)   //VERIFICAR EL LINK
+                `<p>Haga clic en el siguiente enlace para restablecer su contraseña:</p><a href="${resetLink}">${resetLink}</a>`)
 
             //console.log("Enlace para restablecer contraseña:", resetLink)
             
