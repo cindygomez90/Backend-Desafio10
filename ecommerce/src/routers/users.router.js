@@ -24,7 +24,7 @@ usersRouter.put('/:uid', updateUser)
 usersRouter.delete('/:uid', deleteUser)
 
 //Endpoint para cambiar el rol de un usuario
-usersRouter.put('/premium/:uid', passportCall('jwt'), authorization(['ADMIN']), changeUserRole)
+usersRouter.put('/premium/:uid', passportCall('jwt'), authorization(['USER', 'USER_PREMIUM']), changeUserRole)
 
 
 module.exports = usersRouter

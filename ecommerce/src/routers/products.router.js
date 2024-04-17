@@ -16,7 +16,7 @@ productsRouter.get('/', getProducts)
 productsRouter.get('/:pid', getProduct) 
 
 //Endpoint para agregar un nuevo producto
-productsRouter.post('/', passportCall ('jwt'), authorization (['ADMIN']), createProduct)
+productsRouter.post('/', passportCall ('jwt'), authorization (['USER_PREMIUM','ADMIN']), createProduct)
 
 //Endpoint para actualizar campos de un producto por id
 productsRouter.put('/:pid', passportCall ('jwt'), authorization (['ADMIN']), updateProduct)

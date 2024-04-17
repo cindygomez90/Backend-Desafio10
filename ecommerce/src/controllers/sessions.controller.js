@@ -176,7 +176,7 @@ class SessionController {
             return res.render('resetPassword', { token })
     
         } catch (error) {
-            console.error(error);
+            console.error(error)
             return res.status(500).json({ message: 'Ocurrió un error al cargar la vista de restablecimiento de contraseña.' })
         }
     }
@@ -212,12 +212,10 @@ class SessionController {
             if (error.name === 'TokenExpiredError') {
                 return res.status(400).json({ message: 'El enlace para restablecer la contraseña ha expirado. Por favor, solicite uno nuevo.' })
             }
-            console.error(error);
+            console.error(error)
             return res.status(500).json({ message: 'Ocurrió un error al restablecer la contraseña.' })
         }
     }
-    
-
 }
 
 module.exports = SessionController
