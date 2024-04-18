@@ -111,44 +111,12 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
             }
         }
         
-        /*updateProduct = async (req, res)=>{
-            try {
-            const { pid } = req.params
-            const productToUpdate = req.body
-            const product = await this.productService.updateProduct (pid, productToUpdate)
-            
-            res.status(200).send({
-                status: 'success',
-                message: product
-            })
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        
-        deleteProduct = async (request, responses) => {
-            try {
-                const { pid } = request.params
-                const result = await this.productService.deleteProduct (pid)
-        
-                if (!result) {
-                    return responses.status(404).json({ success: false, message: 'Producto no encontrado.' })
-                }
-                responses.json({ success: true, message: 'Producto eliminado correctamente.' })
-            } catch (error) {
-                console.log(error);
-                responses.status(500).json({ success: false, message: 'Error al eliminar el producto.' })
-            }
-        }*/
-
-
         updateProduct = async (req, res) => {
             try {
                 const { pid } = req.params
                 const productToUpdate = req.body
         
-                // Verificar si el usuario es administrador
-                if (req.user && req.user.role === 'ADMIN') {
+                if (req.user && req.user.role === 'ADMIN') {    //verificar si usuario es ADMIN
                     const product = await this.productService.updateProduct(pid, productToUpdate);
                     return res.status(200).json({
                         status: 'success',
@@ -156,9 +124,8 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
                     });
                 }
         
-                // Verificar si el producto pertenece al usuario premium
-                const product = await this.productService.getProduct(pid);
-                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {
+                const product = await this.productService.getProduct(pid) 
+                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {  //verificar si usuario es USER_PREMIUM
                     await this.productService.updateProduct(pid, productToUpdate);
                     return res.status(200).json({
                         status: 'success',
@@ -184,9 +151,8 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
         deleteProduct = async (req, res) => {
             try {
                 const { pid } = req.params
-        
-                // Verificar si el usuario es administrador
-                if (req.user && req.user.role === 'ADMIN') {
+
+                if (req.user && req.user.role === 'ADMIN') {    //verificar si usuario es ADMIN
                     const result = await this.productService.deleteProduct(pid)
                     if (!result) {
                         return res.status(404).json({ success: false, message: 'Producto no encontrado.' })
@@ -194,9 +160,8 @@ const { generateProductErrorInfo } = require ('../utils/errors/info.js')
                     return res.json({ success: true, message: 'Producto eliminado correctamente.' })
                 }
         
-                // Verificar si el producto pertenece al usuario premium
                 const product = await this.productService.getProduct(pid)
-                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {
+                if (product && req.user && req.user.role === 'USER_PREMIUM' && product.owner === req.user.email) {  //verificar si usuario es USER_PREMIUM
                     const result = await this.productService.deleteProduct(pid)
                     if (!result) {
                         return res.status(404).json({ success: false, message: 'Producto no encontrado.' })

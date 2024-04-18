@@ -14,7 +14,7 @@ cartsRouter.get ('/:cid', getCart)
 cartsRouter.post ('/', createCart)
 
 //Endpoint para agregar un producto a un carrito
-cartsRouter.post('/:cid/products/:pid', passportCall ('jwt'), authorization (['USER']), addProductToCart)
+cartsRouter.post('/:cid/products/:pid', passportCall ('jwt'), authorization (['USER', 'USER_PREMIUM']), addProductToCart)
 
 //Endpoint para actualizar el carrito con un arreglo de productos
 cartsRouter.put('/:cid',updateCart)

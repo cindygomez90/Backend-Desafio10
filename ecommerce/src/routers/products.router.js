@@ -19,10 +19,10 @@ productsRouter.get('/:pid', getProduct)
 productsRouter.post('/', passportCall ('jwt'), authorization (['USER_PREMIUM','ADMIN']), createProduct)
 
 //Endpoint para actualizar campos de un producto por id
-productsRouter.put('/:pid', passportCall ('jwt'), authorization (['ADMIN']), updateProduct)
+productsRouter.put('/:pid', passportCall ('jwt'), authorization (['USER_PREMIUM','ADMIN']), updateProduct)
 
 //Endpoint para eliminar un producto por id
-productsRouter.delete('/:pid', passportCall ('jwt'), authorization (['ADMIN']), deleteProduct)
+productsRouter.delete('/:pid', passportCall ('jwt'), authorization (['USER_PREMIUM','ADMIN']), deleteProduct)
 
 
 module.exports = productsRouter
